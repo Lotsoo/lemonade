@@ -17,6 +17,10 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -42,20 +46,63 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun LemonadeApp(modifier: Modifier = Modifier) {
-    ImageAndText()
+    var counter by remember {
+        mutableIntStateOf(value = 1)
+    }
+    when (counter) {
+        1 -> ImageAndText(
+            image = R.drawable.lemon_tree,
+            title = R.string.lemon_tree,
+            buttonFunc = {
+                counter = 2
+            }
+        )
+        2 -> ImageAndText(
+            image = R.drawable.lemon_squeeze,
+            title = R.string.lemon,
+            buttonFunc = {
+                counter = 3
+            }
+        )
+        3 -> ImageAndText(
+            image = R.drawable.lemon_drink,
+            title = R.string.glass_of_lemonade,
+            buttonFunc = {
+                counter = 4
+            }
+        )
+        4 -> ImageAndText(
+            image = R.drawable.lemon_restart,
+            title = R.string.empty_glass,
+            buttonFunc = {
+                counter = 1
+            }
+        )
+    }
 }
 
 @Composable
-fun ImageAndText(modifier: Modifier = Modifier) {
+fun ImageAndText(
+    image: Int,
+    title: Int,
+    buttonFunc: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier.fillMaxSize()
     ) {
-        Button(onClick = { /*TODO*/ }, shape = RoundedCornerShape(topStart = 50.dp, bottomEnd = 50.dp)) {
-            Image(painter = painterResource(id = R.drawable.lemon_tree), contentDescription = null)
+        Button(
+            onClick = buttonFunc,
+            shape = RoundedCornerShape(topStart = 50.dp, bottomEnd = 50.dp)
+        ) {
+            Image(
+                painter = painterResource(id = image),
+                contentDescription = stringResource(id = title)
+            )
         }
         Spacer(modifier = Modifier.height(30.dp))
-        Text(text = stringResource(id = R.string.lemon_tree))
+        Text(text = stringResource(id = title))
     }
 }
