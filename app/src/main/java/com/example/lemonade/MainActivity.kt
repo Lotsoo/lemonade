@@ -7,8 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.Spacer import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -49,19 +48,26 @@ fun LemonadeApp(modifier: Modifier = Modifier) {
     var counter by remember {
         mutableIntStateOf(value = 1)
     }
+    var squeeze by remember {
+        mutableIntStateOf(value = 2)
+    }
     when (counter) {
         1 -> ImageAndText(
             image = R.drawable.lemon_tree,
             title = R.string.lemon_tree,
             buttonFunc = {
                 counter = 2
+                squeeze = (2..4).random()
             }
         )
         2 -> ImageAndText(
             image = R.drawable.lemon_squeeze,
             title = R.string.lemon,
+            squeezeCount = squeeze,
             buttonFunc = {
-                counter = 3
+                squeeze--
+                if (squeeze == 0)
+                    counter = 3
             }
         )
         3 -> ImageAndText(
@@ -83,16 +89,21 @@ fun LemonadeApp(modifier: Modifier = Modifier) {
 
 @Composable
 fun ImageAndText(
+    modifier: Modifier = Modifier,
     image: Int,
     title: Int,
     buttonFunc: () -> Unit,
-    modifier: Modifier = Modifier
+    squeezeCount: Int = 0,
 ) {
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier.fillMaxSize()
     ) {
+        if (squeezeCount > 0){
+            Text(text = "Tap Again: $squeezeCount")
+        }
+        Spacer(modifier = Modifier.height(30.dp))
         Button(
             onClick = buttonFunc,
             shape = RoundedCornerShape(topStart = 50.dp, bottomEnd = 50.dp)
